@@ -1,0 +1,10 @@
+{
+  "name": "お金をあわせよう",
+  "short_name": "お金あわせ",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0b72d9",
+  "orientation": "landscape",
+  "icons": []
+}

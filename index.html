@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b72d9" />
+  <title>お金をあわせよう</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <style>
+    :root{
+      --blue:#0b72d9; --blue2:#085fb7; --yellow:#ffd43b; --orange:#ff9f1c;
+      --green:#45b649; --purple:#8e55d8; --red:#d71920; --ink:#07315f;
+      --line:#e8eef6; --panel:#ffffff;
+    }
+    *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
+    html,body{margin:0; min-height:100%; background:#fff; color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",Meiryo,sans-serif; user-select:none; touch-action:none; overflow:hidden;}
+    body{display:flex; justify-content:center; align-items:center;}
+    .app{width:min(100vw,1366px); height:min(100vh,1024px); aspect-ratio:4/3; max-height:100vh; max-width:100vw; padding:14px 22px 18px; background:#fff; position:relative; overflow:hidden;}
+    .top{display:grid; grid-template-columns:86px 1fr 190px; gap:14px; align-items:center; margin-bottom:10px;}
+    .circle{width:68px; height:68px; border-radius:50%; border:4px solid #fff; background:linear-gradient(#1590ee,#0869c8); color:#fff; display:flex; align-items:center; justify-content:center; font-size:34px; font-weight:900; box-shadow:0 3px 8px #0002;}
+    .topRight{display:flex; gap:14px; justify-content:flex-end;}
+    .mini{font-size:24px; flex-direction:column; line-height:1; gap:3px;}
+    .mini span{font-size:16px;}
+    h1{margin:0; height:76px; border-radius:34px; background:linear-gradient(#1089eb,#0757ae); color:#fff; display:flex; align-items:center; justify-content:center; gap:28px; font-size:48px; letter-spacing:.06em; text-shadow:0 3px 4px #00386e; box-shadow:0 4px 10px #0002;}
+    .star{color:#ffdf28; font-size:42px; text-shadow:none;}
+
+    .problem{width:78%; margin:0 auto 14px; background:#fff; border:4px solid var(--blue); border-radius:18px; padding:10px 24px; text-align:center; font-weight:900; font-size:34px; letter-spacing:.04em; box-shadow:0 2px 6px #0001 inset; display:flex; align-items:center; justify-content:center; gap:22px; min-height:126px;}
+    .productCard{display:flex; align-items:center; justify-content:center; gap:22px; width:100%;}
+    .productIcon{width:108px; height:108px; border:4px solid #d9ecff; border-radius:24px; background:#f6fbff; display:grid; place-items:center; flex:0 0 auto; box-shadow:0 3px 8px #0001 inset;}
+    .productIcon svg{width:92px; height:92px; display:block;}
+    .productInfo{display:flex; flex-direction:column; align-items:flex-start; gap:2px; line-height:1.05;}
+    .productName{font-size:38px; color:var(--ink);}
+    .productPrice{font-size:28px; color:var(--ink);}
+    .problemLine{font-size:24px; color:#23527c; white-space:nowrap; margin-left:auto;}
+    .problem .target{color:var(--red); font-size:58px; padding:0 4px;}
+    .bankWrap,.answerWrap{position:relative; border:4px solid var(--yellow); border-radius:24px; background:#fffef7; padding:58px 22px 18px; margin-bottom:18px;}
+    .answerWrap{border-color:var(--blue); min-height:210px; background:#fff; padding-top:70px;}
+    .tab{position:absolute; top:-4px; left:50%; transform:translateX(-50%); background:linear-gradient(#ffd43b,#f5b90b); color:white; border-radius:0 0 18px 18px; padding:12px 54px; font-size:32px; font-weight:900; letter-spacing:.08em; text-shadow:0 2px 3px #8d6b00;}
+    .answerWrap .tab{background:linear-gradient(#1590ee,#0a6ccc); text-shadow:0 2px 3px #003d7a;}
+    .bank{display:grid; grid-template-columns:1.05fr 1.05fr 1fr 1.1fr .9fr 1fr; gap:18px; align-items:end;}
+    .coinGroup{display:flex; flex-direction:column; align-items:center; gap:8px; min-width:0;}
+    .coinStack{height:140px; display:grid; place-items:center; width:100%;}
+    .stack4{display:grid; grid-template-columns:repeat(2,74px); grid-template-rows:repeat(2,66px); align-items:center; justify-content:center; gap:0;}
+    .stack4.small{grid-template-columns:repeat(2,54px); grid-template-rows:repeat(2,50px);}
+    .sourceCoin{width:94px; height:94px; border-radius:50%; cursor:grab; filter:drop-shadow(0 4px 3px #0003); transition:transform .12s ease, opacity .12s ease;}
+    .sourceCoin:active{cursor:grabbing; transform:scale(1.06);}
+    .yen500{width:132px;height:132px}.yen100{width:88px;height:88px}.yen50{width:96px;height:96px}.yen10{width:86px;height:86px}.yen5{width:94px;height:94px}.yen1{width:72px;height:72px}
+    .label{min-width:140px; padding:7px 8px; border:3px solid #f5d560; border-radius:12px; background:#fffdf2; text-align:center; font-weight:900; font-size:24px; color:#111; line-height:1.15;}
+    .label b{display:block; color:#e14b1b; font-size:30px;}
+    .answer{min-height:112px; display:flex; flex-wrap:wrap; gap:18px; align-items:center; padding:4px 12px;}
+    .placeholder{color:#789; font-weight:900; font-size:30px; opacity:.8; border:4px dashed #b8dcfb; border-radius:20px; padding:24px 40px; margin:auto;}
+    .selectedCoin{width:104px; height:104px; border-radius:50%; cursor:grab; filter:drop-shadow(0 4px 3px #0003);}
+    .answer.dropReady{background:#eef8ff;}
+    .bank.dropReady{outline:4px dashed #8ed0ff; outline-offset:8px; border-radius:16px;}
+    .buttons{display:grid; grid-template-columns:1.25fr .9fr 1fr 1fr; gap:18px;}
+    button{border:0; border-radius:20px; color:#fff; font-size:30px; font-weight:900; padding:22px 18px; box-shadow:inset 0 -5px 0 #0002, 0 3px 8px #0002; cursor:pointer; letter-spacing:.04em;}
+    button:active{transform:translateY(2px); box-shadow:inset 0 -3px 0 #0002, 0 1px 4px #0002;}
+    .check{background:linear-gradient(#ffb229,#ff8d00)} .undo{background:linear-gradient(#66c945,#2c9e24)} .reset{background:linear-gradient(#a56be8,#7c45c5)} .next{background:linear-gradient(#1590ee,#0866c4)}
+    .feedback{position:absolute; inset:0; display:none; align-items:center; justify-content:center; background:#ffffffaa; backdrop-filter:blur(2px); z-index:20;}
+    .feedback.show{display:flex;}
+    .message{background:#fff; border:8px solid var(--blue); border-radius:34px; padding:42px 80px; text-align:center; box-shadow:0 10px 30px #0003; font-size:58px; font-weight:900; color:var(--ink);}
+    .message.good{border-color:#ffb000; color:#e14b1b;}
+    .message.small{font-size:42px;}
+    .dragging{position:fixed !important; z-index:1000; pointer-events:none; transform:translate(-50%,-50%) scale(1.08); opacity:.96;}
+    .hidden{visibility:hidden;}
+    @media (max-width:900px){
+      .app{padding:8px 10px 12px}.top{grid-template-columns:54px 1fr 116px;gap:6px}.circle{width:48px;height:48px;font-size:25px}.mini span{font-size:11px}h1{height:56px;font-size:34px}.star{font-size:30px}.problem{font-size:30px;padding:8px;width:86%}.problem .target{font-size:44px}.bankWrap{padding:46px 10px 10px}.tab{font-size:24px;padding:9px 34px}.bank{gap:8px}.coinStack{height:112px}.yen500{width:94px;height:94px}.yen100{width:66px;height:66px}.yen50{width:72px;height:72px}.yen10{width:64px;height:64px}.yen5{width:68px;height:68px}.yen1{width:54px;height:54px}.stack4{grid-template-columns:repeat(2,56px);grid-template-rows:repeat(2,50px)}.stack4.small{grid-template-columns:repeat(2,42px);grid-template-rows:repeat(2,38px)}.label{font-size:17px;min-width:90px}.label b{font-size:23px}.answerWrap{min-height:160px;padding-top:54px}.placeholder{font-size:22px;padding:18px 22px}.selectedCoin{width:78px;height:78px}button{font-size:22px;padding:15px 8px;border-radius:15px}.buttons{gap:8px}.message{font-size:42px;padding:30px 44px}.problem{min-height:92px;gap:10px;padding:6px 10px}.productIcon{width:72px;height:72px;border-radius:16px}.productIcon svg{width:62px;height:62px}.productName{font-size:25px}.productPrice{font-size:18px}.problem .target{font-size:38px}.problemLine{font-size:15px;white-space:normal;text-align:left}}
+  </style>
+</head>
+<body>
+  <main class="app" aria-label="お金をあわせようアプリ">
+    <section class="top">
+      <button class="circle" id="homeBtn" aria-label="最初に戻る">⌂</button>
+      <h1><span class="star">★</span>お金をあわせよう<span class="star">★</span></h1>
+      <div class="topRight">
+        <button class="circle mini" id="soundBtn" aria-label="音声"><span style="font-size:32px">♪</span><span>おと</span></button>
+        <button class="circle mini" id="helpBtn" aria-label="ヘルプ"><span style="font-size:32px">?</span><span>ヘルプ</span></button>
+      </div>
+    </section>
+
+    <section class="problem" id="problemText">もんだい：<span class="target">120円</span>をつくろう</section>
+
+    <section class="bankWrap">
+      <div class="tab">えらべるお金</div>
+      <div class="bank" id="bank"></div>
+    </section>
+
+    <section class="answerWrap" id="answerWrap">
+      <div class="tab">ここにお金をはこぶ</div>
+      <div class="answer" id="answer"><div class="placeholder">お金をここへ動かそう</div></div>
+    </section>
+
+    <section class="buttons">
+      <button class="check" id="checkBtn">✓ こたえあわせ</button>
+      <button class="undo" id="undoBtn">↶ もどす</button>
+      <button class="reset" id="resetBtn">↻ さいしょから</button>
+      <button class="next" id="nextBtn">➜ つぎへ</button>
+    </section>
+
+    <div class="feedback" id="feedback"><div class="message" id="message"></div></div>
+  </main>
+
+<script>
+const COINS = [
+  {value:500, count:1, file:'assets/coin_500.png', cls:'yen500'},
+  {value:100, count:4, file:'assets/coin_100.png', cls:'yen100'},
+  {value:50,  count:1, file:'assets/coin_50.png',  cls:'yen50'},
+  {value:10,  count:4, file:'assets/coin_10.png',  cls:'yen10'},
+  {value:5,   count:1, file:'assets/coin_5.png',   cls:'yen5'},
+  {value:1,   count:4, file:'assets/coin_1.png',   cls:'yen1'},
+];
+
+// 「つぎへ」でランダムに出る課題。金額は1〜999円まで、この硬貨セットで作れます。
+const QUESTIONS = [
+  {name:'ジュース', amount:120, color:'#ff8a00', svg:'drink'},
+  {name:'パン', amount:150, color:'#d99a42', svg:'bread'},
+  {name:'えんぴつ', amount:85, color:'#ffd34d', svg:'pencil'},
+  {name:'ノート', amount:180, color:'#4aa3ff', svg:'notebook'},
+  {name:'けしゴム', amount:68, color:'#f7a9c6', svg:'eraser'},
+  {name:'りんご', amount:135, color:'#e84a4a', svg:'apple'},
+  {name:'おにぎり', amount:110, color:'#ffffff', svg:'riceball'},
+  {name:'アイス', amount:95, color:'#89d7ff', svg:'icecream'},
+  {name:'あめ', amount:37, color:'#b86bff', svg:'candy'},
+  {name:'プリン', amount:210, color:'#ffd45a', svg:'pudding'},
+  {name:'カレー', amount:450, color:'#c77b32', svg:'curry'},
+  {name:'ラーメン', amount:390, color:'#f3c15b', svg:'ramen'},
+  {name:'くつした', amount:275, color:'#61c78a', svg:'socks'},
+  {name:'ハンバーガー', amount:320, color:'#d69049', svg:'burger'},
+  {name:'チョコ', amount:59, color:'#7a421f', svg:'choco'},
+  {name:'おちゃ', amount:130, color:'#3ba75d', svg:'tea'},
+];
+
+let currentQuestion = null;
+let selected = [];
+let drag = null;
+const bank = document.getElementById('bank');
+const answer = document.getElementById('answer');
+const answerWrap = document.getElementById('answerWrap');
+const problemText = document.getElementById('problemText');
+const feedback = document.getElementById('feedback');
+const message = document.getElementById('message');
+
+function productSvg(type, color){
+  const stroke = '#07315f';
+  const common = `stroke="${stroke}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"`;
+  const map = {
+    drink:`<svg viewBox="0 0 120 120" aria-hidden="true"><rect x="38" y="26" width="44" height="72" rx="10" fill="${color}" ${common}/><path d="M45 22h30M72 22l15-12" fill="none" ${common}/><circle cx="60" cy="58" r="12" fill="#fff" opacity=".75"/></svg>`,
+    bread:`<svg viewBox="0 0 120 120" aria-hidden="true"><path d="M24 62c0-24 16-42 36-42s36 18 36 42v30H24z" fill="${color}" ${common}/><path d="M40 54c8-6 15-6 22 0M63 42c8-6 15-6 22 0" fill="none" ${common}/></svg>`,
+    pencil:`<svg viewBox="0 0 120 120" aria-hidden="true"><path d="M25 83l13 13 55-55-13-13z" fill="${color}" ${common}/><path d="M80 28l8-8 13 13-8 8z" fill="#f28b82" ${common}/><path d="M25 83l-7 20 20-7z" fill="#fff2cc" ${common}/></svg>`,
+    notebook:`<svg viewBox="0 0 120 120" aria-hidden="true"><rect x="30" y="20" width="64" height="82" rx="8" fill="${color}" ${common}/><path d="M45 20v82M55 42h25M55 58h25M55 74h20" fill="none" ${common}/></svg>`,
+    eraser:`<svg viewBox="0 0 120 120" aria-hidden="true"><path d="M28 74l34-34 34 34-24 24H52z" fill="${color}" ${common}/><path d="M52 98L24 70l22-22 28 28" fill="#fff" ${common}/></svg>`,
+    apple:`<svg viewBox="0 0 120 120" aria-hidden="true"><path d="M62 36c16-16 38-2 35 25-3 25-18 41-35 34-17 7-32-9-35-34-3-27 19-41 35-25z" fill="${color}" ${common}/><path d="M62 35c-2-14 8-20 20-20" fill="none" ${common}/><path d="M72 24c11-6 20-2 24 7-10 3-18 1-24-7z" fill="#60b35a" ${common}/></svg>`,
+    riceball:`<svg viewBox="0 0 120 120" aria-hidden="true"><path d="M60 18L18 94h84z" fill="#fff" ${common}/><rect x="48" y="68" width="24" height="28" rx="3" fill="#0a4a3a" ${common}/></svg>`,
+    icecream:`<svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="40" r="26" fill="${color}" ${common}/><path d="M38 63h44L60 108z" fill="#e6b36a" ${common}/><path d="M48 80h24" fill="none" ${common}/></svg>`,
+    candy:`<svg viewBox="0 0 120 120" aria-hidden="true"><path d="M22 44l24 10v12L22 76zM98 44L74 54v12l24 10z" fill="#ffd24d" ${common}/><rect x="42" y="42" width="36" height="36" rx="10" fill="${color}" ${common}/></svg>`,
+    pudding:`<svg viewBox="0 0 120 120" aria-hidden="true"><path d="M32 40h56l-8 56H40z" fill="${color}" ${common}/><ellipse cx="60" cy="40" rx="30" ry="12" fill="#8b4a21" ${common}/><path d="M44 66h32" fill="none" ${common}/></svg>`,
+    curry:`<svg viewBox="0 0 120 120" aria-hidden="true"><ellipse cx="60" cy="76" rx="44" ry="26" fill="#fff" ${common}/><path d="M28 76c14-18 48-22 66-4-8 16-28 24-55 18z" fill="${color}" ${common}/><circle cx="50" cy="70" r="6" fill="#f6d365"/></svg>`,
+    ramen:`<svg viewBox="0 0 120 120" aria-hidden="true"><path d="M24 58h72v18c0 18-15 30-36 30S24 94 24 76z" fill="#fff" ${common}/><path d="M30 58c10-16 50-16 60 0" fill="${color}" ${common}/><path d="M38 70c12-8 32 8 44-2" fill="none" ${common}/></svg>`,
+    socks:`<svg viewBox="0 0 120 120" aria-hidden="true"><path d="M36 18h28v50c0 14-12 26-28 26H20V70h16z" fill="${color}" ${common}/><path d="M68 18h24v62c0 14-10 24-24 24H48V80h20z" fill="#a6e3bd" ${common}/></svg>`,
+    burger:`<svg viewBox="0 0 120 120" aria-hidden="true"><path d="M26 54c4-22 64-22 68 0z" fill="${color}" ${common}/><path d="M24 58h72v14H24z" fill="#5bbf5a" ${common}/><path d="M28 74h64v16H28z" fill="#8b4a21" ${common}/><path d="M30 92h60" fill="none" ${common}/></svg>`,
+    choco:`<svg viewBox="0 0 120 120" aria-hidden="true"><rect x="28" y="28" width="64" height="64" rx="8" fill="${color}" ${common}/><path d="M60 28v64M28 60h64M44 28v64M28 44h64" fill="none" stroke="#fff" stroke-width="3" opacity=".6"/></svg>`,
+    tea:`<svg viewBox="0 0 120 120" aria-hidden="true"><rect x="38" y="25" width="44" height="72" rx="8" fill="${color}" ${common}/><path d="M48 18h24M47 50h26" fill="none" ${common}/><circle cx="60" cy="76" r="10" fill="#fff" opacity=".8"/></svg>`,
+  };
+  return map[type] || map.notebook;
+}
+
+function coinImg(coin, extraClass='sourceCoin'){
+  const img = document.createElement('img');
+  img.src = coin.file;
+  img.alt = `${coin.value}円玉`;
+  img.className = `${extraClass} ${coin.cls}`;
+  img.dataset.value = coin.value;
+  img.dataset.file = coin.file;
+  img.dataset.cls = coin.cls;
+  img.draggable = false;
+  img.addEventListener('pointerdown', startDrag);
+  return img;
+}
+function renderBank(){
+  bank.innerHTML = '';
+  COINS.forEach(coin=>{
+    const group = document.createElement('div'); group.className='coinGroup';
+    const stack = document.createElement('div'); stack.className = 'coinStack';
+    if(coin.count===4){ stack.className += coin.value===1 ? ' stack4 small' : ' stack4'; }
+    for(let i=0;i<coin.count;i++) stack.appendChild(coinImg(coin));
+    const label = document.createElement('div'); label.className='label';
+    label.innerHTML = `${coin.value}円玉 <b>${coin.count}枚</b>`;
+    group.append(stack,label); bank.appendChild(group);
+  });
+}
+function pickRandomQuestion(){
+  if(!currentQuestion){
+    currentQuestion = QUESTIONS[Math.floor(Math.random()*QUESTIONS.length)];
+    return;
+  }
+  let next;
+  do { next = QUESTIONS[Math.floor(Math.random()*QUESTIONS.length)]; } while(next === currentQuestion && QUESTIONS.length > 1);
+  currentQuestion = next;
+}
+function updateProblem(){
+  const q = currentQuestion;
+  problemText.innerHTML = `
+    <div class="productCard">
+      <div class="productIcon" style="--product-color:${q.color}">${productSvg(q.svg, q.color)}</div>
+      <div class="productInfo"><div class="productName">${q.name}</div><div class="productPrice"><span class="target">${q.amount}円</span></div></div>
+    </div>
+    <div class="problemLine">このしなものを かう お金をつくろう</div>`;
+}
+function clearPlaceholder(){ const p=answer.querySelector('.placeholder'); if(p) p.remove(); }
+function ensurePlaceholder(){ if(selected.length===0 && !answer.querySelector('.placeholder')){ const p=document.createElement('div'); p.className='placeholder'; p.textContent='お金をここへ動かそう'; answer.appendChild(p); } }
+function moveToAnswer(el){
+  clearPlaceholder();
+  const coin = { value:+el.dataset.value, file:el.dataset.file, cls:el.dataset.cls };
+  const img = document.createElement('img');
+  img.src = coin.file; img.alt = `${coin.value}円玉`; img.className = `selectedCoin ${coin.cls}`;
+  img.dataset.value = coin.value; img.dataset.file = coin.file; img.dataset.cls = coin.cls;
+  img.draggable = false; img.addEventListener('pointerdown', startDrag);
+  answer.appendChild(img); selected.push(img);
+  el.remove();
+}
+function moveToBank(el){
+  const val = +el.dataset.value;
+  const coin = COINS.find(c=>c.value===val);
+  const groups = [...bank.querySelectorAll('.coinGroup')];
+  const stack = groups[COINS.findIndex(c=>c.value===val)].querySelector('.coinStack');
+  const newImg = coinImg(coin);
+  stack.appendChild(newImg);
+  selected = selected.filter(x=>x!==el);
+  el.remove(); ensurePlaceholder();
+}
+function startDrag(e){
+  e.preventDefault();
+  const el = e.currentTarget;
+  const rect = el.getBoundingClientRect();
+  drag = { el, fromAnswer: el.classList.contains('selectedCoin'), startX:e.clientX, startY:e.clientY, moved:false };
+  el.classList.add('dragging'); el.style.left=e.clientX+'px'; el.style.top=e.clientY+'px'; el.style.width=rect.width+'px'; el.style.height=rect.height+'px';
+  document.addEventListener('pointermove', onMove);
+  document.addEventListener('pointerup', endDrag, {once:true});
+}
+function onMove(e){
+  if(!drag) return;
+  if(Math.abs(e.clientX-drag.startX)+Math.abs(e.clientY-drag.startY)>8) drag.moved = true;
+  drag.el.style.left=e.clientX+'px'; drag.el.style.top=e.clientY+'px';
+  const overAnswer = pointIn(e.clientX,e.clientY, answerWrap.getBoundingClientRect());
+  const overBank = pointIn(e.clientX,e.clientY, bank.getBoundingClientRect());
+  answer.classList.toggle('dropReady', overAnswer);
+  bank.classList.toggle('dropReady', overBank);
+}
+function pointIn(x,y,r){ return x>=r.left && x<=r.right && y>=r.top && y<=r.bottom; }
+function endDrag(e){
+  document.removeEventListener('pointermove', onMove);
+  answer.classList.remove('dropReady'); bank.classList.remove('dropReady');
+  if(!drag) return;
+  const el = drag.el;
+  el.classList.remove('dragging'); el.style.left=''; el.style.top=''; el.style.width=''; el.style.height='';
+  const overAnswer = pointIn(e.clientX,e.clientY, answerWrap.getBoundingClientRect());
+  const overBank = pointIn(e.clientX,e.clientY, bank.getBoundingClientRect());
+  if(!drag.moved){
+    drag.fromAnswer ? moveToBank(el) : moveToAnswer(el);
+  } else if(!drag.fromAnswer && overAnswer){
+    moveToAnswer(el);
+  } else if(drag.fromAnswer && overBank){
+    moveToBank(el);
+  }
+  drag = null;
+}
+function sumSelected(){ return [...answer.querySelectorAll('.selectedCoin')].reduce((s,el)=>s+(+el.dataset.value),0); }
+function showMessage(text, good=false){
+  message.textContent=text; message.className='message'+(good?' good':''); feedback.classList.add('show');
+  setTimeout(()=>feedback.classList.remove('show'), good?1200:1400);
+}
+function resetQuestion(){ selected=[...answer.querySelectorAll('.selectedCoin')]; selected.forEach(el=>el.remove()); selected=[]; renderBank(); ensurePlaceholder(); }
+function undo(){ const last = selected[selected.length-1]; if(last) moveToBank(last); }
+function next(){ pickRandomQuestion(); updateProblem(); resetQuestion(); }
+function speak(text){ try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang='ja-JP'; u.rate=.9; speechSynthesis.speak(u); }catch(e){} }
+
+document.getElementById('checkBtn').onclick=()=>{ const total=sumSelected(); if(total===currentQuestion.amount) showMessage('ぴったり！せいかい！',true); else showMessage('もういちど やってみよう'); };
+document.getElementById('undoBtn').onclick=undo;
+document.getElementById('resetBtn').onclick=resetQuestion;
+document.getElementById('nextBtn').onclick=next;
+document.getElementById('homeBtn').onclick=()=>{ pickRandomQuestion(); updateProblem(); resetQuestion(); };
+document.getElementById('soundBtn').onclick=()=>speak(`${currentQuestion.name}、${currentQuestion.amount}円。お金をつくろう`);
+document.getElementById('helpBtn').onclick=()=>showMessage('お金を 下のわくへ 動かそう',false);
+feedback.onclick=()=>feedback.classList.remove('show');
+if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{})); }
+pickRandomQuestion(); renderBank(); updateProblem(); ensurePlaceholder();
+</script>
+</body>
+</html>
