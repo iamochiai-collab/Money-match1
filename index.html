@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover" />
   <meta name="theme-color" content="#0b72d9" />
   <title>お金をあわせよう</title>
   <link rel="manifest" href="manifest.webmanifest" />
@@ -12,8 +12,8 @@
       --green:#45b649; --purple:#8e55d8; --red:#d71920; --ink:#07315f;
       --line:#e8eef6; --panel:#ffffff;
     }
-    *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
-    html,body{margin:0; height:100%; background:#fff; color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",Meiryo,sans-serif; user-select:none; touch-action:none; overflow:hidden;}
+    *{box-sizing:border-box; -webkit-tap-highlight-color: transparent; -webkit-touch-callout:none;}
+    html,body{margin:0; height:100%; background:#fff; color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",Meiryo,sans-serif; user-select:none; -webkit-user-select:none; touch-action:manipulation; overflow:hidden; overscroll-behavior:none;}
     body{display:grid; place-items:center;}
     .app{width:1180px; height:760px; padding:12px 16px; background:#fff; position:relative; overflow:hidden; display:grid; grid-template-rows:72px 44px 20px 98px 1.16fr .78fr 84px; gap:8px; transform:scale(var(--scale,1)); transform-origin:center center;}
     .top{display:grid; grid-template-columns:72px 1fr 150px; gap:10px; align-items:center;}
@@ -49,7 +49,7 @@
     .coinStack{height:92px; display:grid; place-items:center; width:100%;}
     .stack4{display:grid; grid-template-columns:repeat(2,56px); grid-template-rows:repeat(2,48px); align-items:center; justify-content:center; gap:0;}
     .stack4.small{grid-template-columns:repeat(2,42px); grid-template-rows:repeat(2,36px);}
-    .sourceCoin{width:78px; height:78px; border-radius:50%; cursor:grab; filter:drop-shadow(0 3px 3px #0003); transition:transform .12s ease, opacity .12s ease;}
+    .sourceCoin{touch-action:none; -webkit-user-drag:none; width:78px; height:78px; border-radius:50%; cursor:grab; filter:drop-shadow(0 3px 3px #0003); transition:transform .12s ease, opacity .12s ease;}
     .sourceCoin:active{cursor:grabbing; transform:scale(1.06);}
     .yen500{width:100px;height:100px}.yen100{width:68px;height:68px}.yen50{width:74px;height:74px}.yen10{width:66px;height:66px}.yen5{width:72px;height:72px}.yen1{width:56px;height:56px}
     .label{min-width:110px; padding:5px 8px; border:3px solid #f5d560; border-radius:12px; background:#fffdf2; text-align:center; font-weight:900; font-size:18px; color:#111; line-height:1.15;}
@@ -57,12 +57,12 @@
 
     .answer{min-height:100%; height:100%; display:flex; flex-wrap:wrap; gap:12px; align-items:center; padding:4px 10px; align-content:flex-start;}
     .placeholder{color:#789; font-weight:900; font-size:24px; opacity:.8; border:4px dashed #b8dcfb; border-radius:18px; padding:18px 30px; margin:auto;}
-    .selectedCoin{width:82px; height:82px; border-radius:50%; cursor:grab; filter:drop-shadow(0 3px 3px #0003);}
+    .selectedCoin{touch-action:none; -webkit-user-drag:none; width:82px; height:82px; border-radius:50%; cursor:grab; filter:drop-shadow(0 3px 3px #0003);}
     .answer.dropReady{background:#eef8ff;}
     .bank.dropReady{outline:4px dashed #8ed0ff; outline-offset:4px; border-radius:16px;}
 
     .buttons{display:grid; grid-template-columns:1.25fr .9fr 1fr 1fr; gap:12px;}
-    button{border:0; border-radius:18px; color:#fff; font-size:24px; font-weight:900; padding:16px 10px; box-shadow:inset 0 -5px 0 #0002, 0 3px 8px #0002; cursor:pointer; letter-spacing:.04em;}
+    button{touch-action:manipulation; -webkit-user-select:none; user-select:none; border:0; border-radius:18px; color:#fff; font-size:24px; font-weight:900; padding:16px 10px; box-shadow:inset 0 -5px 0 #0002, 0 3px 8px #0002; cursor:pointer; letter-spacing:.04em;}
     button:active{transform:translateY(2px); box-shadow:inset 0 -3px 0 #0002, 0 1px 4px #0002;}
     .check{background:linear-gradient(#ffb229,#ff8d00)} .undo{background:linear-gradient(#66c945,#2c9e24)} .reset{background:linear-gradient(#a56be8,#7c45c5)} .next{background:linear-gradient(#1590ee,#0866c4)}
 
@@ -426,6 +426,27 @@ function undo(){ const last = selected[selected.length-1]; if(last) moveToBank(l
 function next(){ pickRandomQuestion(); updateProblem(); resetQuestion(); }
 function speak(text){ try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang='ja-JP'; u.rate=.9; speechSynthesis.speak(u); }catch(e){} }
 
+
+
+// Safariのダブルタップ拡大・ピンチ拡大をできるだけ防ぐ
+let lastTouchEndTime = 0;
+document.addEventListener('touchend', function(e){
+  const now = Date.now();
+  if(now - lastTouchEndTime <= 350){
+    e.preventDefault();
+  }
+  lastTouchEndTime = now;
+}, {passive:false});
+
+document.addEventListener('dblclick', function(e){
+  e.preventDefault();
+}, {passive:false});
+
+['gesturestart','gesturechange','gestureend'].forEach(function(type){
+  document.addEventListener(type, function(e){
+    e.preventDefault();
+  }, {passive:false});
+});
 
 function fitStage(){
   const stageW = 1180;

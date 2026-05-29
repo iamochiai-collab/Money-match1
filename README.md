@@ -1,13 +1,13 @@
-# お金をあわせよう（5レベル版）
+# お金をあわせよう（5レベル・ズーム防止版）
 
 iPad横向き前提で、スクロールなしで使えるお金学習アプリです。
 
-## レベル
-- レベル1：1種類の硬貨だけで作る問題
-- レベル2：100円玉と10円玉を組み合わせる問題（100〜300円＋10〜30円）
-- レベル3：旧レベル1
-- レベル4：旧レベル2
-- レベル5：旧レベル3
+## 今回の修正
+- Safariでダブルタップした時の拡大をできるだけ防ぐ設定を追加
+- viewport、touch-action、dblclick/touchend/gestureイベントの抑制を追加
+- キャッシュ名を更新
 
-## 使い方
-`index.html`、`assets`、`manifest.webmanifest`、`sw.js` をGitHub Pagesにアップロードしてください。
+## GitHub Pagesでの更新
+`index.html`、`assets`、`manifest.webmanifest`、`sw.js` を上書きアップロードしてください。
+
+反映が古い場合は、URLの最後に `?v=6` を付けて開いてください。
