@@ -24,6 +24,10 @@
     h1{margin:0; height:76px; border-radius:34px; background:linear-gradient(#1089eb,#0757ae); color:#fff; display:flex; align-items:center; justify-content:center; gap:28px; font-size:48px; letter-spacing:.06em; text-shadow:0 3px 4px #00386e; box-shadow:0 4px 10px #0002;}
     .star{color:#ffdf28; font-size:42px; text-shadow:none;}
 
+    .levelBar{display:flex; justify-content:center; gap:12px; margin:-2px auto 10px; flex-wrap:wrap;}
+    .levelBtn{border:3px solid #d6e9ff; background:#fff; color:var(--blue); border-radius:16px; font-size:24px; padding:10px 22px; box-shadow:0 2px 6px #0001; cursor:pointer;}
+    .levelBtn.active{background:linear-gradient(#1590ee,#0866c4); color:#fff; border-color:#0866c4;}
+    .levelGuide{text-align:center; font-size:18px; color:#446; margin:-4px 0 8px; font-weight:700;}
     .problem{width:78%; margin:0 auto 14px; background:#fff; border:4px solid var(--blue); border-radius:18px; padding:10px 24px; text-align:center; font-weight:900; font-size:34px; letter-spacing:.04em; box-shadow:0 2px 6px #0001 inset; display:flex; align-items:center; justify-content:center; gap:22px; min-height:126px;}
     .productCard{display:flex; align-items:center; justify-content:center; gap:22px; width:100%;}
     .productIcon{width:108px; height:108px; border:4px solid #d9ecff; border-radius:24px; background:#f6fbff; display:grid; place-items:center; flex:0 0 auto; box-shadow:0 3px 8px #0001 inset;}
@@ -64,7 +68,7 @@
     .dragging{position:fixed !important; z-index:1000; pointer-events:none; transform:translate(-50%,-50%) scale(1.08); opacity:.96;}
     .hidden{visibility:hidden;}
     @media (max-width:900px){
-      .app{padding:8px 10px 12px}.top{grid-template-columns:54px 1fr 116px;gap:6px}.circle{width:48px;height:48px;font-size:25px}.mini span{font-size:11px}h1{height:56px;font-size:34px}.star{font-size:30px}.problem{font-size:30px;padding:8px;width:86%}.problem .target{font-size:44px}.bankWrap{padding:46px 10px 10px}.tab{font-size:24px;padding:9px 34px}.bank{gap:8px}.coinStack{height:112px}.yen500{width:94px;height:94px}.yen100{width:66px;height:66px}.yen50{width:72px;height:72px}.yen10{width:64px;height:64px}.yen5{width:68px;height:68px}.yen1{width:54px;height:54px}.stack4{grid-template-columns:repeat(2,56px);grid-template-rows:repeat(2,50px)}.stack4.small{grid-template-columns:repeat(2,42px);grid-template-rows:repeat(2,38px)}.label{font-size:17px;min-width:90px}.label b{font-size:23px}.answerWrap{min-height:160px;padding-top:54px}.placeholder{font-size:22px;padding:18px 22px}.selectedCoin{width:78px;height:78px}button{font-size:22px;padding:15px 8px;border-radius:15px}.buttons{gap:8px}.message{font-size:42px;padding:30px 44px}.problem{min-height:92px;gap:10px;padding:6px 10px}.productIcon{width:72px;height:72px;border-radius:16px}.productIcon svg{width:62px;height:62px}.productName{font-size:25px}.productPrice{font-size:18px}.problem .target{font-size:38px}.problemLine{font-size:15px;white-space:normal;text-align:left}}
+      .app{padding:8px 10px 12px}.top{grid-template-columns:54px 1fr 116px;gap:6px}.circle{width:48px;height:48px;font-size:25px}.mini span{font-size:11px}h1{height:56px;font-size:34px}.star{font-size:30px}.problem{font-size:30px;padding:8px;width:86%}.problem .target{font-size:44px}.bankWrap{padding:46px 10px 10px}.tab{font-size:24px;padding:9px 34px}.bank{gap:8px}.coinStack{height:112px}.yen500{width:94px;height:94px}.yen100{width:66px;height:66px}.yen50{width:72px;height:72px}.yen10{width:64px;height:64px}.yen5{width:68px;height:68px}.yen1{width:54px;height:54px}.stack4{grid-template-columns:repeat(2,56px);grid-template-rows:repeat(2,50px)}.stack4.small{grid-template-columns:repeat(2,42px);grid-template-rows:repeat(2,38px)}.label{font-size:17px;min-width:90px}.label b{font-size:23px}.answerWrap{min-height:160px;padding-top:54px}.placeholder{font-size:22px;padding:18px 22px}.selectedCoin{width:78px;height:78px}button{font-size:22px;padding:15px 8px;border-radius:15px}.buttons{gap:8px}.message{font-size:42px;padding:30px 44px}.problem{min-height:92px;gap:10px;padding:6px 10px}.productIcon{width:72px;height:72px;border-radius:16px}.productIcon svg{width:62px;height:62px}.levelBar{gap:6px;margin-bottom:6px}.levelBtn{font-size:18px;padding:8px 10px;border-radius:12px}.levelGuide{font-size:13px;margin:-4px 0 4px}.productName{font-size:25px}.productPrice{font-size:18px}.problem .target{font-size:38px}.problemLine{font-size:15px;white-space:normal;text-align:left}}
   </style>
 </head>
 <body>
@@ -77,6 +81,13 @@
         <button class="circle mini" id="helpBtn" aria-label="ヘルプ"><span style="font-size:32px">?</span><span>ヘルプ</span></button>
       </div>
     </section>
+
+    <section class="levelBar" aria-label="難易度を選ぶ">
+      <button class="levelBtn active" id="level1Btn" data-level="1">レベル1</button>
+      <button class="levelBtn" id="level2Btn" data-level="2">レベル2</button>
+      <button class="levelBtn" id="level3Btn" data-level="3">レベル3</button>
+    </section>
+    <div class="levelGuide" id="levelGuide">レベル1：100円玉・10円玉・1円玉を使う、やさしい問題</div>
 
     <section class="problem" id="problemText">もんだい：<span class="target">120円</span>をつくろう</section>
 
@@ -110,26 +121,94 @@ const COINS = [
   {value:1,   count:4, file:'assets/coin_1.png',   cls:'yen1'},
 ];
 
-// 「つぎへ」でランダムに出る課題。金額は1〜999円まで、この硬貨セットで作れます。
-const QUESTIONS = [
-  {name:'ジュース', amount:120, color:'#ff8a00', svg:'drink'},
-  {name:'パン', amount:150, color:'#d99a42', svg:'bread'},
-  {name:'えんぴつ', amount:85, color:'#ffd34d', svg:'pencil'},
-  {name:'ノート', amount:180, color:'#4aa3ff', svg:'notebook'},
-  {name:'けしゴム', amount:68, color:'#f7a9c6', svg:'eraser'},
-  {name:'りんご', amount:135, color:'#e84a4a', svg:'apple'},
-  {name:'おにぎり', amount:110, color:'#ffffff', svg:'riceball'},
-  {name:'アイス', amount:95, color:'#89d7ff', svg:'icecream'},
-  {name:'あめ', amount:37, color:'#b86bff', svg:'candy'},
-  {name:'プリン', amount:210, color:'#ffd45a', svg:'pudding'},
-  {name:'カレー', amount:450, color:'#c77b32', svg:'curry'},
-  {name:'ラーメン', amount:390, color:'#f3c15b', svg:'ramen'},
-  {name:'くつした', amount:275, color:'#61c78a', svg:'socks'},
-  {name:'ハンバーガー', amount:320, color:'#d69049', svg:'burger'},
-  {name:'チョコ', amount:59, color:'#7a421f', svg:'choco'},
-  {name:'おちゃ', amount:130, color:'#3ba75d', svg:'tea'},
+const PRODUCT_TEMPLATES = [
+  {name:'ジュース', color:'#ff8a00', svg:'drink'},
+  {name:'パン', color:'#d99a42', svg:'bread'},
+  {name:'えんぴつ', color:'#ffd34d', svg:'pencil'},
+  {name:'ノート', color:'#4aa3ff', svg:'notebook'},
+  {name:'けしゴム', color:'#f7a9c6', svg:'eraser'},
+  {name:'りんご', color:'#e84a4a', svg:'apple'},
+  {name:'おにぎり', color:'#ffffff', svg:'riceball'},
+  {name:'アイス', color:'#89d7ff', svg:'icecream'},
+  {name:'あめ', color:'#b86bff', svg:'candy'},
+  {name:'プリン', color:'#ffd45a', svg:'pudding'},
+  {name:'カレー', color:'#c77b32', svg:'curry'},
+  {name:'ラーメン', color:'#f3c15b', svg:'ramen'},
+  {name:'くつした', color:'#61c78a', svg:'socks'},
+  {name:'ハンバーガー', color:'#d69049', svg:'burger'},
+  {name:'チョコ', color:'#7a421f', svg:'choco'},
+  {name:'おちゃ', color:'#3ba75d', svg:'tea'},
+  {name:'みかん', color:'#ffb347', svg:'apple'},
+  {name:'シール', color:'#9ad3ff', svg:'notebook'},
+  {name:'ボール', color:'#ff7070', svg:'candy'},
+  {name:'タオル', color:'#93d7c3', svg:'socks'},
 ];
 
+let currentLevel = 1;
+let levelQuestions = {1:[], 2:[], 3:[]};
+let questionIndex = {1:0, 2:0, 3:0};
+
+function shuffle(array){
+  for(let i=array.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [array[i],array[j]]=[array[j],array[i]]; }
+  return array;
+}
+function randomPick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function makeQuestion(amount, level){
+  const item = randomPick(PRODUCT_TEMPLATES);
+  return {...item, amount, level};
+}
+function coinTypesUsed(counts){ return Object.values(counts).filter(v=>v>0).length; }
+function makeLevel1Amounts(){
+  // 500円玉・50円玉・5円玉は使わず、100円玉・10円玉・1円玉から2種類で作れる金額。
+  // 120円、240円のような「100円玉＋10円玉」を多めに出します。
+  const amounts=[];
+  const add=(v,weight=1)=>{ for(let i=0;i<weight;i++) amounts.push(v); };
+  for(let a=1;a<=4;a++) for(let b=1;b<=4;b++) add(a*100+b*10, 4); // 110〜440
+  for(let a=1;a<=4;a++) for(let c=1;c<=4;c++) add(a*100+c, 1);    // 101〜404
+  for(let b=1;b<=4;b++) for(let c=1;c<=4;c++) add(b*10+c, 1);     // 11〜44
+  return amounts;
+}
+function makeLevel2Amounts(){
+  // 500円玉以外を使用。3種類以上の硬貨を組み合わせる問題を中心にします。
+  const set = new Set();
+  for(let a=0;a<=4;a++) for(let b=0;b<=1;b++) for(let c=0;c<=4;c++) for(let d=0;d<=1;d++) for(let e=0;e<=4;e++){
+    const counts={yen100:a,yen50:b,yen10:c,yen5:d,yen1:e};
+    const amount=a*100+b*50+c*10+d*5+e;
+    if(amount>=10 && amount<=499 && coinTypesUsed(counts)>=3) set.add(amount);
+  }
+  return [...set];
+}
+function makeLevel3Amounts(){
+  // 111円〜999円。500円玉も含め、4種類以上の硬貨を組み合わせて作れる問題を中心にします。
+  const set = new Set();
+  for(let f=0;f<=1;f++) for(let a=0;a<=4;a++) for(let b=0;b<=1;b++) for(let c=0;c<=4;c++) for(let d=0;d<=1;d++) for(let e=0;e<=4;e++){
+    const counts={yen500:f,yen100:a,yen50:b,yen10:c,yen5:d,yen1:e};
+    const amount=f*500+a*100+b*50+c*10+d*5+e;
+    if(amount>=111 && amount<=999 && coinTypesUsed(counts)>=4) set.add(amount);
+  }
+  return [...set];
+}
+function buildQuestionBank(level){
+  const source = level===1 ? makeLevel1Amounts() : level===2 ? makeLevel2Amounts() : makeLevel3Amounts();
+  const bank=[];
+  while(bank.length<200){
+    const amounts = shuffle([...source]);
+    for(const amount of amounts){
+      bank.push(makeQuestion(amount, level));
+      if(bank.length>=200) break;
+    }
+  }
+  return shuffle(bank);
+}
+function buildAllQuestionBanks(){
+  levelQuestions = {1:buildQuestionBank(1), 2:buildQuestionBank(2), 3:buildQuestionBank(3)};
+  questionIndex = {1:0, 2:0, 3:0};
+}
+const LEVEL_GUIDES = {
+  1:'レベル1：500円玉・50円玉・5円玉は使わない、2種類の硬貨でできる問題',
+  2:'レベル2：500円玉以外を使って、いくつかの硬貨を組み合わせる問題',
+  3:'レベル3：111円〜999円まで、500円玉も使うチャレンジ問題'
+};
 let currentQuestion = null;
 let selected = [];
 let drag = null;
@@ -183,19 +262,35 @@ function renderBank(){
     const stack = document.createElement('div'); stack.className = 'coinStack';
     if(coin.count===4){ stack.className += coin.value===1 ? ' stack4 small' : ' stack4'; }
     for(let i=0;i<coin.count;i++) stack.appendChild(coinImg(coin));
-    const label = document.createElement('div'); label.className='label';
+    const label = document.createElement('div'); label.className='label'; label.dataset.value = coin.value;
     label.innerHTML = `${coin.value}円玉 <b>${coin.count}枚</b>`;
     group.append(stack,label); bank.appendChild(group);
   });
 }
+function updateBankLabels(){
+  [...bank.querySelectorAll('.coinGroup')].forEach(group=>{
+    const label = group.querySelector('.label');
+    const stack = group.querySelector('.coinStack');
+    if(label && stack){
+      const value = label.dataset.value;
+      const remaining = stack.querySelectorAll('img').length;
+      label.innerHTML = `${value}円玉 <b>${remaining}枚</b>`;
+    }
+  });
+}
 function pickRandomQuestion(){
-  if(!currentQuestion){
-    currentQuestion = QUESTIONS[Math.floor(Math.random()*QUESTIONS.length)];
-    return;
+  const list = levelQuestions[currentLevel];
+  if(questionIndex[currentLevel] >= list.length){
+    levelQuestions[currentLevel] = buildQuestionBank(currentLevel);
+    questionIndex[currentLevel] = 0;
   }
-  let next;
-  do { next = QUESTIONS[Math.floor(Math.random()*QUESTIONS.length)]; } while(next === currentQuestion && QUESTIONS.length > 1);
-  currentQuestion = next;
+  currentQuestion = levelQuestions[currentLevel][questionIndex[currentLevel]++];
+}
+function setLevel(level){
+  currentLevel = level;
+  document.querySelectorAll('.levelBtn').forEach(btn=>btn.classList.toggle('active', Number(btn.dataset.level)===level));
+  document.getElementById('levelGuide').textContent = LEVEL_GUIDES[level];
+  next();
 }
 function updateProblem(){
   const q = currentQuestion;
@@ -217,6 +312,7 @@ function moveToAnswer(el){
   img.draggable = false; img.addEventListener('pointerdown', startDrag);
   answer.appendChild(img); selected.push(img);
   el.remove();
+  updateBankLabels();
 }
 function moveToBank(el){
   const val = +el.dataset.value;
@@ -225,6 +321,7 @@ function moveToBank(el){
   const stack = groups[COINS.findIndex(c=>c.value===val)].querySelector('.coinStack');
   const newImg = coinImg(coin);
   stack.appendChild(newImg);
+  updateBankLabels();
   selected = selected.filter(x=>x!==el);
   el.remove(); ensurePlaceholder();
 }
@@ -269,21 +366,22 @@ function showMessage(text, good=false){
   message.textContent=text; message.className='message'+(good?' good':''); feedback.classList.add('show');
   setTimeout(()=>feedback.classList.remove('show'), good?1200:1400);
 }
-function resetQuestion(){ selected=[...answer.querySelectorAll('.selectedCoin')]; selected.forEach(el=>el.remove()); selected=[]; renderBank(); ensurePlaceholder(); }
+function resetQuestion(){ selected=[...answer.querySelectorAll('.selectedCoin')]; selected.forEach(el=>el.remove()); selected=[]; renderBank(); ensurePlaceholder(); updateBankLabels(); }
 function undo(){ const last = selected[selected.length-1]; if(last) moveToBank(last); }
 function next(){ pickRandomQuestion(); updateProblem(); resetQuestion(); }
 function speak(text){ try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang='ja-JP'; u.rate=.9; speechSynthesis.speak(u); }catch(e){} }
 
+document.querySelectorAll('.levelBtn').forEach(btn=>btn.onclick=()=>setLevel(Number(btn.dataset.level)));
 document.getElementById('checkBtn').onclick=()=>{ const total=sumSelected(); if(total===currentQuestion.amount) showMessage('ぴったり！せいかい！',true); else showMessage('もういちど やってみよう'); };
 document.getElementById('undoBtn').onclick=undo;
 document.getElementById('resetBtn').onclick=resetQuestion;
 document.getElementById('nextBtn').onclick=next;
-document.getElementById('homeBtn').onclick=()=>{ pickRandomQuestion(); updateProblem(); resetQuestion(); };
+document.getElementById('homeBtn').onclick=()=>setLevel(1);
 document.getElementById('soundBtn').onclick=()=>speak(`${currentQuestion.name}、${currentQuestion.amount}円。お金をつくろう`);
 document.getElementById('helpBtn').onclick=()=>showMessage('お金を 下のわくへ 動かそう',false);
 feedback.onclick=()=>feedback.classList.remove('show');
 if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{})); }
-pickRandomQuestion(); renderBank(); updateProblem(); ensurePlaceholder();
+buildAllQuestionBanks(); pickRandomQuestion(); renderBank(); updateProblem(); ensurePlaceholder(); updateBankLabels();
 </script>
 </body>
 </html>
