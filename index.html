@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover" />
   <meta name="theme-color" content="#0b72d9" />
-  <title>お金をあわせよう</title>
+  <title>お金をあわせよう v10</title>
   <link rel="manifest" href="manifest.webmanifest" />
   <style>
     :root{
@@ -489,6 +489,21 @@ document.getElementById('soundBtn').onclick=()=>speak(`${currentQuestion.name}�
 document.getElementById('helpBtn').onclick=()=>showMessage('お金を 下のわくへ 動かそう',false);
 feedback.onclick=()=>feedback.classList.remove('show');
 if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{})); }
+
+// 更新が反映されない対策：古いService WorkerとCache Storageを削除する
+(function clearOldCache(){
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.getRegistrations()
+      .then(regs => Promise.all(regs.map(reg => reg.unregister())))
+      .catch(()=>{});
+  }
+  if('caches' in window){
+    caches.keys()
+      .then(keys => Promise.all(keys.map(key => caches.delete(key))))
+      .catch(()=>{});
+  }
+})();
+
 buildAllQuestionBanks(); pickRandomQuestion(); renderBank(); updateProblem(); ensurePlaceholder(); updateBankLabels(); fitStage();
 </script>
 </body>
