@@ -15,7 +15,7 @@
     *{box-sizing:border-box; -webkit-tap-highlight-color: transparent; -webkit-touch-callout:none;}
     html,body{margin:0; height:100%; background:#fff; color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",Meiryo,sans-serif; user-select:none; -webkit-user-select:none; touch-action:manipulation; overflow:hidden; overscroll-behavior:none;}
     body{display:grid; place-items:center;}
-    .app{width:1180px; height:760px; padding:12px 16px; background:#fff; position:relative; overflow:hidden; display:grid; grid-template-rows:72px 44px 20px 98px 1.16fr .78fr 84px; gap:8px; transform:scale(var(--scale,1)); transform-origin:center center;}
+    .app{width:1180px; height:760px; padding:12px 16px; background:#fff; position:relative; overflow:hidden; display:grid; grid-template-rows:70px 42px 20px 90px 1.05fr 1.02fr 78px; gap:8px; transform:scale(var(--scale,1)); transform-origin:center center;}
     .top{display:grid; grid-template-columns:72px 1fr 150px; gap:10px; align-items:center;}
     .circle{width:56px; height:56px; border-radius:50%; border:4px solid #fff; background:linear-gradient(#1590ee,#0869c8); color:#fff; display:flex; align-items:center; justify-content:center; font-size:30px; font-weight:900; box-shadow:0 3px 8px #0002; padding:0;}
     .topRight{display:flex; gap:10px; justify-content:flex-end;}
@@ -25,7 +25,7 @@
     .star{color:#ffdf28; font-size:34px; text-shadow:none;}
 
     .levelBar{display:flex; justify-content:center; gap:8px; margin:0 auto; flex-wrap:nowrap;}
-    .levelBtn{border:3px solid #d6e9ff; background:#fff; color:var(--blue); border-radius:14px; font-size:19px; padding:7px 16px; box-shadow:0 2px 6px #0001; cursor:pointer;}
+    .levelBtn{border:3px solid #d6e9ff; background:#fff; color:var(--blue); border-radius:14px; font-size:18px; padding:7px 13px; box-shadow:0 2px 6px #0001; cursor:pointer;}
     .levelBtn.active{background:linear-gradient(#1590ee,#0866c4); color:#fff; border-color:#0866c4;}
     .levelGuide{text-align:center; font-size:14px; color:#446; font-weight:700; line-height:1;}
 
@@ -40,7 +40,7 @@
     .problem .target{color:var(--red); font-size:44px; padding:0 4px;}
 
     .bankWrap,.answerWrap{position:relative; border:4px solid var(--yellow); border-radius:24px; background:#fffef7; padding:42px 14px 12px; margin:0; min-height:0; overflow:hidden;}
-    .answerWrap{border-color:var(--blue); background:#fff; padding-top:48px;}
+    .answerWrap{border-color:var(--blue); background:#fff; padding-top:48px; overflow:hidden;}
     .tab{position:absolute; top:-4px; left:50%; transform:translateX(-50%); background:linear-gradient(#ffd43b,#f5b90b); color:white; border-radius:0 0 18px 18px; padding:9px 36px; font-size:25px; font-weight:900; letter-spacing:.05em; text-shadow:0 2px 3px #8d6b00; white-space:nowrap;}
     .answerWrap .tab{background:linear-gradient(#1590ee,#0a6ccc); text-shadow:0 2px 3px #003d7a;}
 
@@ -55,9 +55,9 @@
     .label{min-width:110px; padding:5px 8px; border:3px solid #f5d560; border-radius:12px; background:#fffdf2; text-align:center; font-weight:900; font-size:18px; color:#111; line-height:1.15;}
     .label b{display:block; color:#e14b1b; font-size:24px;}
 
-    .answer{min-height:100%; height:100%; display:flex; flex-wrap:wrap; gap:12px; align-items:center; padding:4px 10px; align-content:flex-start;}
+    .answer{height:100%; max-height:100%; display:flex; flex-wrap:wrap; gap:12px; align-items:flex-start; padding:6px 10px; align-content:flex-start; overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch; touch-action:pan-y; scrollbar-gutter:stable;}
     .placeholder{color:#789; font-weight:900; font-size:24px; opacity:.8; border:4px dashed #b8dcfb; border-radius:18px; padding:18px 30px; margin:auto;}
-    .selectedCoin{touch-action:none; -webkit-user-drag:none; width:82px; height:82px; border-radius:50%; cursor:grab; filter:drop-shadow(0 3px 3px #0003);}
+    .selectedCoin{touch-action:none; -webkit-user-drag:none; width:72px; height:72px; border-radius:50%; cursor:grab; filter:drop-shadow(0 3px 3px #0003);}
     .answer.dropReady{background:#eef8ff;}
     .bank.dropReady{outline:4px dashed #8ed0ff; outline-offset:4px; border-radius:16px;}
 
@@ -92,6 +92,7 @@
       <button class="levelBtn" data-level="3">レベル3</button>
       <button class="levelBtn" data-level="4">レベル4</button>
       <button class="levelBtn" data-level="5">レベル5</button>
+      <button class="levelBtn" data-level="6">レベル6</button>
     </section>
     <div class="levelGuide" id="levelGuide">レベル1：1種類の硬貨だけで作る問題</div>
 
@@ -151,8 +152,8 @@ const PRODUCT_TEMPLATES = [
 ];
 
 let currentLevel = 1;
-let levelQuestions = {1:[], 2:[], 3:[], 4:[], 5:[]};
-let questionIndex = {1:0, 2:0, 3:0, 4:0, 5:0};
+let levelQuestions = {1:[], 2:[], 3:[], 4:[], 5:[], 6:[]};
+let questionIndex = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0};
 
 function shuffle(array){
   for(let i=array.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [array[i],array[j]]=[array[j],array[i]]; }
@@ -215,8 +216,18 @@ function makeLevel5Amounts(){
   }
   return [...set];
 }
+function makeLevel6Amounts(){
+  // 100円玉は3枚まで。50円玉2枚を100円分として補う両替チャレンジ。
+  const set = new Set();
+  for(let a=0;a<=3;a++) for(let b=2;b<=4;b++) for(let c=0;c<=4;c++) for(let d=0;d<=1;d++) for(let e=0;e<=4;e++){
+    const amount=a*100+b*50+c*10+d*5+e;
+    if(amount>=350 && amount<=545 && Math.floor(amount/100)>a) set.add(amount);
+  }
+  [350,360,370,380,390,400,410,420,430,440,450,460,470,480,490,500,510,520,530,540].forEach(v=>set.add(v));
+  return [...set];
+}
 function buildQuestionBank(level){
-  const source = level===1 ? makeLevel1Amounts() : level===2 ? makeLevel2Amounts() : level===3 ? makeLevel3Amounts() : level===4 ? makeLevel4Amounts() : makeLevel5Amounts();
+  const source = level===1 ? makeLevel1Amounts() : level===2 ? makeLevel2Amounts() : level===3 ? makeLevel3Amounts() : level===4 ? makeLevel4Amounts() : level===5 ? makeLevel5Amounts() : makeLevel6Amounts();
   const bank=[];
   while(bank.length<200){
     const amounts = shuffle([...source]);
@@ -228,15 +239,16 @@ function buildQuestionBank(level){
   return shuffle(bank);
 }
 function buildAllQuestionBanks(){
-  levelQuestions = {1:buildQuestionBank(1), 2:buildQuestionBank(2), 3:buildQuestionBank(3), 4:buildQuestionBank(4), 5:buildQuestionBank(5)};
-  questionIndex = {1:0, 2:0, 3:0, 4:0, 5:0};
+  levelQuestions = {1:buildQuestionBank(1), 2:buildQuestionBank(2), 3:buildQuestionBank(3), 4:buildQuestionBank(4), 5:buildQuestionBank(5), 6:buildQuestionBank(6)};
+  questionIndex = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0};
 }
 const LEVEL_GUIDES = {
   1:'レベル1：100円だけ・10円だけなど、1種類の硬貨だけで作る問題',
   2:'レベル2：100円玉と10円玉を使う問題（100〜300円＋10〜30円）',
   3:'レベル3：500円玉・50円玉・5円玉は使わない、2種類の硬貨でできる問題',
   4:'レベル4：500円玉以外を使って、いくつかの硬貨を組み合わせる問題',
-  5:'レベル5：111円〜999円まで、500円玉も使うチャレンジ問題'
+  5:'レベル5：111円〜999円まで、500円玉も使うチャレンジ問題',
+  6:'レベル6：100円玉が足りない分を50円玉で補う、両替チャレンジ'
 };
 let currentQuestion = null;
 let selected = [];
@@ -291,6 +303,14 @@ function renderBank(){
     const stack = document.createElement('div'); stack.className = 'coinStack';
     if(coin.count===4){ stack.className += coin.value===1 ? ' stack4 small' : ' stack4'; }
     for(let i=0;i<coin.count;i++) stack.appendChild(coinImg(coin));
+    if(coin.count===0){
+      const empty = document.createElement('div');
+      empty.style.fontWeight='900';
+      empty.style.color='#9aa';
+      empty.style.fontSize='18px';
+      empty.textContent='なし';
+      stack.appendChild(empty);
+    }
     const label = document.createElement('div'); label.className='label'; label.dataset.value = coin.value;
     label.innerHTML = `${coin.value}円玉 <b>${coin.count}枚</b>`;
     group.append(stack,label); bank.appendChild(group);
@@ -317,6 +337,7 @@ function pickRandomQuestion(){
 }
 function setLevel(level){
   currentLevel = level;
+  COINS = (level===6 ? LEVEL6_COINS : BASE_COINS).map(c=>({...c}));
   document.querySelectorAll('.levelBtn').forEach(btn=>btn.classList.toggle('active', Number(btn.dataset.level)===level));
   document.getElementById('levelGuide').textContent = LEVEL_GUIDES[level];
   next();
@@ -348,6 +369,7 @@ function moveToBank(el){
   const coin = COINS.find(c=>c.value===val);
   const groups = [...bank.querySelectorAll('.coinGroup')];
   const stack = groups[COINS.findIndex(c=>c.value===val)].querySelector('.coinStack');
+  [...stack.children].forEach(child=>{ if(child.tagName !== 'IMG') child.remove(); });
   const newImg = coinImg(coin);
   stack.appendChild(newImg);
   updateBankLabels();
