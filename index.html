@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#ffffff">
 <title>お金をあわせよう</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,7 +17,8 @@
   --hand:var(--font);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;height:100%;background:#fff;color:var(--ink);font-family:var(--font)}
+html,body{margin:0;height:100%;background:#fff;color:var(--ink);font-family:var(--font);touch-action:manipulation}
+button,label,input{touch-action:manipulation}
 body{overflow:hidden;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 button{font:inherit;color:inherit}
 :focus-visible{outline:3px solid #f59e0b;outline-offset:2px}
@@ -210,7 +211,7 @@ dialog::backdrop{background:#1f2b3d66}
 </head>
 <body>
 <div class="app" id="app">
-  <div class="brand"><h1>お金をあわせよう</h1><small>v25</small></div>
+  <div class="brand"><h1>お金をあわせよう</h1><small>v26</small></div>
 
   <div class="levels">
     <span class="lv-label">レベル</span>
@@ -291,7 +292,7 @@ dialog::backdrop{background:#1f2b3d66}
     <label class="opt"><span>ごうけいを みせる<small>トレーに いま いくらか でます</small></span><input type="checkbox" class="switch" id="optTotal"></label>
     <label class="opt"><span>おと<small>お金を おいた おとや せいかいの おと</small></span><input type="checkbox" class="switch" id="optSound"></label>
     <button class="btn close" id="helpClose" type="button">とじる</button>
-    <div class="ver">v25</div>
+    <div class="ver">v26</div>
   </div>
 </dialog>
 
@@ -476,7 +477,7 @@ function check(){
 function closeResult(goNext){$('result').classList.remove('show');if(goNext)next();}
 
 /* ---------- ドラッグ ---------- */
-let drag=null;
+let drag=null,lastTap=0;
 function inside(x,y,el){const r=el.getBoundingClientRect();return x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom;}
 function targetOf(d,x,y){const t=d.fromWallet?tray:wallet;return inside(x,y,t)?t:null;}
 function onDown(e){
@@ -508,7 +509,11 @@ function onMove(e){
 function cleanup(){tray.classList.remove('hover');removeEventListener('pointermove',onMove);removeEventListener('pointerup',onUp);removeEventListener('pointercancel',onCancel);}
 function onUp(e){
   const d=drag;if(!d||e.pointerId!==d.id)return;cleanup();drag=null;
-  if(!d.moved){if(opts.tap)(d.fromWallet?addCoin:returnCoin)(d.v);return;}
+  if(!d.moved){
+    // すばやい 2かいめの タップは むし（ダブルタップで 2まい うごかない）
+    const now=Date.now();if(now-lastTap<350)return;lastTap=now;
+    if(opts.tap)(d.fromWallet?addCoin:returnCoin)(d.v);return;
+  }
   if(targetOf(d,e.clientX,e.clientY)){d.ghost.remove();(d.fromWallet?addCoin:returnCoin)(d.v);return;}
   snapBack(d);
 }
@@ -540,6 +545,12 @@ function bindOpt(id,key,apply){const el=$(id);el.checked=opts[key];el.onchange=(
 bindOpt('optTap','tap');
 bindOpt('optTotal','total',()=>document.body.classList.toggle('showTotal',opts.total));
 bindOpt('optSound','sound');
+
+/* ダブルタップで 画面が 大きく ならないように */
+let lastTouchEnd=0;
+document.addEventListener('touchend',e=>{const now=Date.now();if(now-lastTouchEnd<350)e.preventDefault();lastTouchEnd=now;},{passive:false});
+document.addEventListener('dblclick',e=>e.preventDefault(),{passive:false});
+document.addEventListener('gesturestart',e=>e.preventDefault(),{passive:false});
 
 /* 古いキャッシュを けす（v21と同じ） */
 if('serviceWorker'in navigator)navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});
